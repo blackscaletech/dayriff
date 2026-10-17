@@ -6,12 +6,13 @@ Validated on 16 October 2026 using isolated synthetic trips and public destinati
 
 | Coverage | Result |
 | --- | --- |
-| Offline constraint, security and failure tests | 304 passed |
+| Offline constraint, security and failure tests | 310 passed |
 | Type checking and production build | Passed |
 | Production dependency audit | No known vulnerabilities reported |
 | Hosted live acceptance | 20/20 checks passed, 9 planning/chat requests |
 | Earlier New York/London conversations | 56 checks passed |
 | Regional live matrix: Asheville, Tulsa, Dunedin | 24/24 checks passed |
+| Starting-landmark regression: New York, London, Asheville, Tulsa | 11/11 live checks passed |
 | Schedule arithmetic sweep | 103,680 combinations checked |
 
 ## Hosted acceptance
@@ -31,6 +32,12 @@ Offline tests additionally cover owner/revision boundaries, forged and expired c
 Privacy and sharing checks cover confirmed deletion, cancellation, recoverable failures, content-free cross-tab clearing, public snapshot redaction, expiry and native-share cancellation without unintended copying. The Firestore SDK and provider credentials stay server-side.
 
 ## Broader live coverage
+
+The v0.1.2 starting-point regression reproduced an exact landmark competing with child businesses in search results. Exact canonical names now determine place identity, with complete administrative qualifiers, distinct-name ambiguity, building numbers, city validation and walking range checked separately. Public parks can also anchor an approximate area when local centroid coverage is missing. Six additional automated test groups cover these boundaries, including omitted or changed building numbers from the interpreter and mixed public/nonprofit/commercial taxonomy.
+
+Eleven real-provider checks passed Central Park, conversational wording, a spelling slip, a city qualifier, Central Park Zoo, Grand Central Terminal, an incomplete numbered address requiring clarification, Hyde Park in London, Pack Square Park in Asheville, Guthrie Green in Tulsa, and a full Central Park outing with exact session reload. The final run used 27 provider requests. Private diagnostic records remain excluded from source and deployment uploads.
+
+The deployed v0.1.2 also passed four checks on `dayriff.com`: a Central Park outing, incomplete-address rejection preserving the existing itinerary, a read-only chat answer identifying the origin, and exact plan/conversation reload. Its isolated synthetic trip was cleared afterward.
 
 The earlier 56-check matrix covered New York from SoHo and near the venue, plus London from Camden Town. It exercised repeated preferences, typed/button swaps, exclusions and reversals, budget changes, dining/café requests, walking changes, retained places, contradictory requests, read-only answers and reload/history restoration.
 

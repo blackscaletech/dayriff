@@ -151,6 +151,9 @@ test('proper business names retain city and area words while conflicting declare
  await withInterpretation('New York Public Library','place',[entity(18,'Brooklyn Public Library','1 Example St, New York')],async config=>{
   await assert.rejects(resolveStartingLocation(config,'New York Public Library',venue),errorCode('START_NOT_FOUND'));
  });
+ await withInterpretation('New York Public Library','place',[entity(73,'Public Library','1 Example St, New York')],async config=>{
+  await assert.rejects(resolveStartingLocation(config,'New York Public Library',venue),errorCode('START_NOT_FOUND'));
+ });
  const boston={...venue,city:'Boston',address:'1 Example St, Boston, MA',coordinates:{latitude:42.36,longitude:-71.06}};
  const cafe={...entity(19,'Corner Cafe','1 Example St, Boston, MA'),location:{lat:42.36,lon:-71.06},properties:{address:'1 Example St, Boston, MA',geocode:{city:'Boston'}}};
  await withInterpretation('Corner Cafe','place',[cafe],async config=>{
@@ -250,5 +253,116 @@ test('private apartment details may be omitted when the provider verifies the co
 test('single-letter street names remain significant rather than matching a different named street', async () => {
   await withInterpretation('1 B Street', 'address', [entity(48, 'Wrong street', '1 C St, New York, NY')], async config => {
     await assert.rejects(resolveStartingLocation(config, '1 B Street', venue), needsDetails);
+  });
+});
+
+
+// Landmark fixtures remain synthetic: extra name words describe distinct child places.
+function publicPark(id: number, options: {name?: string; city?: string; latitude?: number; commercial?: boolean} = {}) {
+  return areaAnchor(id, 'park', {name: options.name ?? 'Cedar Park', ...options});
+}
+
+test('an exact landmark wins over child businesses regardless of result order', async () => {
+  const park = publicPark(60);
+  const children = [
+    publicPark(61, {name: 'Cedar Park Zoo', latitude: 40.735}),
+    publicPark(62, {name: 'Cedar Park Tennis Center', latitude: 40.74}),
+  ];
+  for (const places of [[park, ...children], [...children, park], [children[1], park, children[0]]]) {
+    await withInterpretation('Cedar Park', 'place', places, async (config, requests) => {
+      const start = await resolveStartingLocation(config, 'Cedar Park', venue);
+      assert.equal(start?.id, park.entity_id);
+      assert.equal(start?.name, 'Cedar Park');
+      assert.deepEqual(start?.coordinates, {latitude: 40.721, longitude: -73.991});
+      assert.ok(requests.qloo.length <= 2, 'Landmark resolution stays bounded');
+    });
+  }
+});
+
+test('child and reordered place names cannot substitute for a missing exact landmark', async () => {
+  for (const name of ['Cedar Park Zoo', 'Park Cedar']) {
+    await withInterpretation('Cedar Park', 'place', [publicPark(63, {name})], async config => {
+      await assert.rejects(resolveStartingLocation(config, 'Cedar Park', venue), errorCode('START_NOT_FOUND'));
+    });
+  }
+});
+
+test('exact landmark matching accepts a leading article and proven administrative qualifiers', async () => {
+  await withInterpretation('The Cedar Park, New York, NY', 'place', [publicPark(64)], async config => {
+    assert.equal((await resolveStartingLocation(config, 'The Cedar Park, New York, NY', venue))?.name, 'Cedar Park');
+  });
+  for (const query of ['Cedar Park, Boston', 'Cedar Park Market']) {
+    await withInterpretation(query, 'place', [publicPark(65)], async config => {
+      await assert.rejects(resolveStartingLocation(config, query, venue), errorCode('START_NOT_FOUND'));
+    });
+  }
+});
+
+test('distinct exact-name landmarks still require clarification and retain city and range validation', async () => {
+  await withInterpretation('Cedar Park', 'place', [publicPark(66), publicPark(67, {latitude: 40.735})], async config => {
+    await assert.rejects(resolveStartingLocation(config, 'Cedar Park', venue), errorCode('START_AMBIGUOUS'));
+  });
+  await withInterpretation('Cedar Park', 'place', [publicPark(68, {city: 'Boston'})], async config => {
+    await assert.rejects(resolveStartingLocation(config, 'Cedar Park', venue), errorCode('START_NOT_FOUND'));
+  });
+  await withInterpretation('Cedar Park', 'place', [publicPark(69, {latitude: 40.9})], async config => {
+    await assert.rejects(resolveStartingLocation(config, 'Cedar Park', venue), errorCode('START_OUT_OF_RANGE'));
+  });
+});
+
+test('a numbered partial street never becomes an unnumbered landmark and receives address guidance', async () => {
+  const park = {...publicPark(70), properties: {address: 'Cedar Park, New York, NY', geocode: {city: 'New York'}}};
+  await withInterpretation('250 Cedar Park', 'address', [park], async config => {
+    await assert.rejects(resolveStartingLocation(config, '250 Cedar Park', venue), (error: unknown) => {
+      assert.ok(error instanceof ServiceError);
+      assert.match(error.code, /^START_/);
+      assert.match(error.message, /(?:complete|full) street address|street (?:name|direction|suffix)/i);
+      return true;
+    });
+  });
+  for (const [query, kind] of [['Cedar Park', 'place'], ['25 Cedar Park', 'address']] as const) {
+    await withInterpretation(query, kind, [park], async (config, requests) => {
+      await assert.rejects(resolveStartingLocation(config, '250 Cedar Park', venue), errorCode('START_NEEDS_DETAILS'));
+      assert.equal(requests.qloo.length, 0, 'Changed or omitted building numbers require clarification before provider lookup');
+    });
+  }
+});
+
+test('an exact public park resolves as a place or area while mixed commercial anchors remain excluded', async () => {
+  const park = publicPark(71);
+  for (const kind of ['place', 'neighborhood'] as const) {
+    await withInterpretation('Cedar Park', kind, areaOrAnchors([park]), async (config, requests) => {
+      const start = await resolveStartingLocation(config, 'around Cedar Park', venue);
+      assert.equal(start?.id, park.entity_id);
+      assert.equal(start?.name, 'Cedar Park');
+      assert.deepEqual(start?.coordinates, {latitude: 40.721, longitude: -73.991});
+      assert.ok(requests.qloo.length <= 3);
+      if (kind === 'neighborhood') {
+        assert.equal(start?.approximate, true);
+        assert.equal(start?.source?.title, 'Qloo area landmark');
+      }
+    });
+  }
+  await withInterpretation('Cedar Park', 'neighborhood', url => results(url.searchParams.get('types') === 'urn:entity:place' ? [park] : [area(74, 'Cedar Park', 40.9)]), async (config, requests) => {
+    const start = await resolveStartingLocation(config, 'around Cedar Park', venue);
+    assert.equal(start?.id, park.entity_id, 'A distant locality namesake cannot suppress the exact nearby public landmark');
+    assert.deepEqual(start?.coordinates, {latitude: 40.721, longitude: -73.991});
+    assert.equal(start?.approximate, true);
+    assert.equal(start?.source?.title, 'Qloo area landmark');
+    assert.ok(requests.qloo.length <= 3);
+  });
+  const charityTag = {type: 'urn:tag:category:place', value: 'urn:tag:category:place:charity'};
+  const charityPark = {...publicPark(75), tags: [...park.tags, charityTag]};
+  await withInterpretation('Cedar Park', 'neighborhood', areaOrAnchors([charityPark]), async config => {
+    const start = await resolveStartingLocation(config, 'around Cedar Park', venue);
+    assert.equal(start?.id, charityPark.entity_id);
+    assert.equal(start?.approximate, true);
+    assert.equal(start?.source?.title, 'Qloo area landmark');
+  });
+  await withInterpretation('Cedar Park', 'neighborhood', areaOrAnchors([{...publicPark(76), tags: [charityTag]}]), async config => {
+    await assert.rejects(resolveStartingLocation(config, 'around Cedar Park', venue), errorCode('START_NOT_FOUND'));
+  });
+  await withInterpretation('Cedar Park', 'neighborhood', areaOrAnchors([publicPark(72, {commercial: true})]), async config => {
+    await assert.rejects(resolveStartingLocation(config, 'around Cedar Park', venue), errorCode('START_NOT_FOUND'));
   });
 });

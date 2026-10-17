@@ -302,14 +302,15 @@ export async function searchStartingLocalities(config: QlooConfig, query: string
   const list = await request(config, '/search', {query, types: kind === 'anchor' ? 'urn:entity:place' : 'urn:entity:locality', take: kind === 'anchor' ? '10' : '8', ...(near ? {'filter.location': `${near.latitude},${near.longitude}`, 'filter.radius': '5'} : {})});
   if (kind === 'anchor') {
     const nameKey = (value: string) => value.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
-    const publicAnchor = /^urn:tag:(?:category|genre):place:(?:tourist_attraction|town_square|plaza|subway_station|train_station|railway_station|transit_station|bus_station|ferry_terminal)$/;
+    const publicAnchor = /^urn:tag:(?:category|genre):place:(?:tourist_attraction|town_square|plaza|park|city_park|urban_park|garden|public_garden|botanical_garden|subway_station|train_station|railway_station|transit_station|bus_station|ferry_terminal)$/;
+    const anchorOrganization = /^urn:tag:(?:category|genre):place:charity$/;
     return list.flatMap(entity => {
       const item = identity(entity, 'place'), point = coordinates(entity);
       if (!item || !point || nameKey(item.name) !== nameKey(query)) return [];
       const properties = record(entity.properties);
       const tags = taxonomy(entity).map(tag => tag.id).filter(tag => tag !== 'urn:tag:genre:place');
       // An attraction tag cannot disguise a private business or an unrecognized place type.
-      if (!tags.length || !tags.every(tag => publicAnchor.test(tag))) return [];
+      if (!tags.some(tag => publicAnchor.test(tag)) || !tags.every(tag => publicAnchor.test(tag) || anchorOrganization.test(tag))) return [];
       const city = cleanText(record(properties.geocode).city, 100);
       const googleId = googlePlaceId(entity);
       return [{...item, ...(city ? {city} : {}), address: address(entity), coordinates: point,

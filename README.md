@@ -61,4 +61,4 @@ These checks run without provider credentials. Deliberate live acceptance checks
 - [Deployment](docs/deployment.md): Cloud Run/Firestore launch configuration and reproduction steps.
 - [Submission](docs/submission.md): current hackathon requirements and publication checks.
 
-Current package version: **0.1.1**. Repository attribution: [blackscaletech](https://github.com/blackscaletech). Original source and brand artwork use the [MIT license](LICENSE); provider data, photography and dependencies retain their own terms as explained in [NOTICE](NOTICE).
+Current package version: **0.1.2**. Repository attribution: [blackscaletech](https://github.com/blackscaletech). Original source and brand artwork use the [MIT license](LICENSE); provider data, photography and dependencies retain their own terms as explained in [NOTICE](NOTICE).

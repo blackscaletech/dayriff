@@ -15,20 +15,22 @@ function withoutCity(value: string, city: string): string {
 function validCoordinates(point: Coordinates): boolean {
   return Number.isFinite(point.latitude) && Number.isFinite(point.longitude) && Math.abs(point.latitude) <= 90 && Math.abs(point.longitude) <= 180;
 }
-function nameScore(location: StartingLocation, query: string, venue: Venue): number {
-  if (normalized(location.name) === normalized(query)) return 100;
-  const wanted = withoutCity(query, venue.city), candidate = withoutCity(location.name, venue.city);
+export function startingNameScore(location: Pick<StartingLocation, 'name'>, query: string, city: string, administrativeNames: string[] = []): number {
+  const canonicalName = (value: string) => normalized(value).replace(/^the /, '');
+  const wanted = canonicalName(query), candidate = canonicalName(location.name);
   if (!wanted || !candidate) return 0;
   if (wanted === candidate) return 100;
-  // Interpret a name followed by administrative qualifiers only when those
-  // qualifiers are evidenced by the selected venue or returned locality.
-  const context = new Set(normalized(`${venue.city} ${venue.address} ${location.address}`).split(' '));
+  // Optional qualifiers must be complete provider city/administrative names.
+  // Street words and fragments of another proper name cannot supply that proof.
+  const context = [...new Set([...cityAliases(city), ...administrativeNames.map(normalized)].filter(Boolean))].map(value => value.split(' '));
   function matchesAdministrativeContext(value: string): boolean {
-    const city = normalized(venue.city);
-    // City is optional only after the complete verified venue-city name,
-    // never an ignored token attached to a different named location.
-    const qualifiers = (` ${normalized(value)} `).split(` ${city} city `).join(` ${city} `).trim();
-    return !qualifiers || qualifiers.split(' ').every(word => context.has(word));
+    const qualifiers = normalized(value).split(' ').filter(Boolean);
+    const positions = new Set([0]);
+    for (let index = 0; index < qualifiers.length; index++) {
+      if (!positions.has(index)) continue;
+      for (const component of context) if (component.every((word, offset) => qualifiers[index + offset] === word)) positions.add(index + component.length);
+    }
+    return positions.has(qualifiers.length);
   }
   const queryWords = normalized(query).split(' '), nameWords = candidate.split(' ');
   const nameAt = queryWords.findIndex((_, index) => nameWords.every((word, offset) => queryWords[index + offset] === word));
@@ -41,7 +43,7 @@ function nameScore(location: StartingLocation, query: string, venue: Venue): num
     if (prefix.every(word => ['around', 'near', 'in', 'within', 'at', 'by', 'from', 'the', 'starting'].includes(word)) && matchesAdministrativeContext(suffix.join(' '))) return 100;
   }
   const components = query.split(',').map(part => normalized(part)).filter(Boolean);
-  const queryName = withoutCity(components[0] ?? '', venue.city);
+  const queryName = canonicalName(components[0] ?? '');
   const suffix = queryName === candidate && components.length > 1 ? components.slice(1).join(' ') : normalized(query).startsWith(`${candidate} `) ? normalized(query).slice(candidate.length).trim() : '';
   if (suffix && matchesAdministrativeContext(suffix)) return 100;
   const wantedWords = wanted.split(' '), candidateWords = candidate.split(' ');
@@ -116,7 +118,7 @@ export async function lookupStartingArea(config: QlooConfig, query: string, venu
     }
     const matches = [...candidates.values()].flatMap(location => {
       if (!validCoordinates(location.coordinates)) return [];
-      const score = nameScore(location, cleanQuery, venue);
+      const score = startingNameScore(location, cleanQuery, city, location.address.split(',').slice(1));
       if (!score) return [];
       // A named municipality can be an adjacent city rather than a neighborhood
       // inside the concert city. Require the complete provider name and retain the
@@ -134,8 +136,9 @@ export async function lookupStartingArea(config: QlooConfig, query: string, venu
       return {status: 'found', location: {...location, source: location.source ?? {title: 'Qloo locality data', url: 'https://www.qloo.com/'}, approximate: true}};
     }
   }
-  if (!failed && !distant) {
-    // A missing area centroid may have an exact-name public landmark or station.
+  if (!failed) {
+    // A missing local centroid may have an exact-name public landmark or station.
+    // Distant namesakes cannot suppress a verified landmark near this venue.
     // This is one bounded provider lookup, never a fuzzy business or neighboring-area substitution.
     let anchors: (StartingLocation & {city?: string})[];
     try {anchors = await searchStartingLocalities(config, queries[0]!, venue.coordinates, 'anchor');}
@@ -148,7 +151,7 @@ export async function lookupStartingArea(config: QlooConfig, query: string, venu
       const {city: _city, ...location} = first;
       return {status: 'found', location: {...location, approximate: true}};
     }
-    distant = named.length > 0;
+    distant ||= named.length > 0;
   }
   return {status: failed ? 'unavailable' : distant ? 'out_of_range' : 'not_found'};
 }
