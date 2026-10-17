@@ -1,0 +1,17 @@
+.place-media { position: relative; width: 100%; background: var(--media-base); margin: 0; aspect-ratio: 2 / 1; max-height: 278px; overflow: hidden; }
+.place-media > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.015); transition: opacity 400ms ease, transform 700ms ease; }
+.place-media--loaded > img { opacity: 1; transform: scale(1); }
+.place-media figcaption { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 5px; padding: 14px 12px 27px; color: var(--surface); background: linear-gradient(transparent, rgb(0 0 0 / 36%)); font-size: var(--text-micro); line-height: var(--leading-caption); font-weight: var(--weight-body); }
+.place-media__credit { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; max-width: 100%; padding: 8px 10px; border: 1px solid rgb(255 255 255 / 25%); border-radius: var(--radius-sm); background: rgb(25 23 30 / 35%); color: inherit; text-decoration: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.place-media__credit--static { min-height: 0; padding: 3px 0; border: 0; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.place-media__credit > svg { flex-shrink: 0; }
+.place-media__credit > span:first-child { overflow-wrap: anywhere; }
+@media (prefers-reduced-transparency: reduce) { .place-media__credit { background: #3c3941; backdrop-filter: none; -webkit-backdrop-filter: none; } }
+.place-media--illustration { display: grid; place-items: center; background: var(--media-base); color: var(--accent); }
+.place-media--outdoors { background: var(--media-green); color: var(--green); }
+.place-media--culture { background: var(--media-sand); color: var(--ochre); }
+.place-media--shop { background: var(--media-blue); color: var(--blue); }
+.place-media__path { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1; opacity: .2; }
+.place-media__path > circle { fill: currentColor; stroke: none; }
+.place-media__symbol { display: grid; place-items: center; width: 70px; height: 70px; border-radius: 24px; background: rgb(255 255 255 / 65%); position: relative; }
+.place-media__illustration-label { position: absolute; right: 13px; bottom: 27px; color: var(--ink-muted); font-size: var(--text-micro); font-weight: var(--weight-body); line-height: var(--leading-caption); }

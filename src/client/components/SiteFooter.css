@@ -1,0 +1,29 @@
+.site-footer { --glass-control: color-mix(in srgb, var(--surface) 88%, transparent); --glass-control-hover: color-mix(in srgb, var(--surface) 96%, transparent); display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; width: fit-content; max-width: 100%; margin: auto 0 0 auto; padding-top: 16px; }
+.site-footer__control { position: relative; margin: 0; letter-spacing: 0; white-space: nowrap; text-align: center; gap: 6px; min-height: 36px; padding: 8px 12px; color: var(--ink-secondary); font-size: var(--text-micro); font-weight: var(--weight-body); line-height: var(--leading-caption); }
+.site-footer__control::after { content: ''; position: absolute; inset: -4px 0; border-radius: inherit; }
+.site-footer__control:hover { color: var(--ink); }
+.site-footer--photos, .site-footer--docked { position: fixed; left: 20px; bottom: max(12px, env(safe-area-inset-bottom)); margin: 0; padding-top: 0; }
+.site-about { display: grid; gap: 18px; }
+.site-about p { margin: 0; }
+.site-about__lead { font-size: 19px; font-weight: var(--weight-heading); line-height: var(--leading-label); letter-spacing: -.35px; }
+.site-about__description { color: var(--ink-secondary); font-size: var(--text-callout); font-weight: var(--weight-label); line-height: var(--leading-caption); letter-spacing: -.2px; text-wrap: pretty; }
+.site-about__signature { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; padding-top: 4px; color: var(--ink-secondary); font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-caption); letter-spacing: -.1px; }
+.site-about__author { position: relative; display: inline-flex; align-items: center; gap: 5px; color: var(--accent); font-weight: var(--weight-title); text-decoration: none; border-radius: 3px; }
+.site-about__author::after { content: ''; position: absolute; inset: -13px 0; }
+.site-about__author > svg { flex-shrink: 0; opacity: .65; }
+.site-about__privacy { justify-content: space-between; width: 100%; font-size: var(--text-secondary); }
+.site-about__privacy > svg { transform: rotate(-90deg); color: var(--ink-muted); }
+@media (hover: hover) { .site-about__author:hover { text-decoration: underline; text-underline-offset: 3px; } }
+@media (min-width: 960px) {
+  .site-about-sheet { width: min(480px, calc(100% - 48px)); }
+  .site-about-sheet .sheet__header { padding: 24px 28px 18px; }
+  .site-about-sheet .sheet__body { padding: 28px 32px 41px; }
+  .site-about { gap: 28px; }
+}
+@media (max-width: 959px) {
+  .site-footer__control { min-height: 32px; padding-block: 6px; }
+  .site-footer__control::after { inset-block: -6px; }
+  .site-footer--photos, .site-footer--docked { position: static; left: auto; bottom: auto; margin: auto 0 0 auto; padding-top: 16px; }
+  .site-footer--docked { padding-bottom: var(--journey-dock-clearance); }
+}
+@media (prefers-reduced-transparency: reduce) { .site-footer__photo-credit { display: none; } }

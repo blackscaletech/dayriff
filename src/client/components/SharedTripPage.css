@@ -1,0 +1,4 @@
+.shared-trip__label { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 20px; padding: 6px 10px; border-radius: var(--radius-pill); color: var(--accent); background: var(--accent-wash); font-size: var(--text-caption); line-height: var(--leading-label); font-weight: var(--weight-label); }
+.shared-trip__failure { align-items: stretch; gap: 16px; max-width: 430px; margin-inline: auto; }
+.shared-trip__failure > svg { color: var(--accent); }
+.shared-trip__failure > div { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }

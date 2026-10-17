@@ -1,0 +1,17 @@
+.calendar-picker__navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.calendar-picker__navigation h3 { color: var(--ink); font-size: 18px; font-weight: var(--weight-heading); letter-spacing: -.3px; margin: 0; line-height: var(--leading-label); }
+.calendar-picker__navigation > div { display: flex; align-items: center; gap: 5px; }
+.calendar-picker__previous svg { transform: rotate(90deg); }
+.calendar-picker__next svg { transform: rotate(-90deg); }
+.calendar-picker__weekdays, .calendar-picker__days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin-inline: -16px; }
+.calendar-picker__weekdays { margin-bottom: 6px; color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--leading-caption); text-align: center; font-weight: var(--weight-label); }
+.calendar-picker__days { row-gap: 3px; }
+.calendar-picker__day { display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink); font-size: var(--text-control); line-height: var(--leading-label); cursor: pointer; transition: background 140ms, color 140ms; font-weight: var(--weight-label); }
+.calendar-picker__day > span { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid transparent; border-radius: 50%; }
+.calendar-picker__day--outside { color: var(--ink-muted); }
+.calendar-picker__day[aria-current="date"] > span { border-color: var(--accent-line); color: var(--accent); }
+.calendar-picker__day--selected > span, .calendar-picker__day--selected[aria-current="date"] > span { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
+.calendar-picker__day:disabled { color: var(--ink-muted); opacity: .3; }
+.calendar-picker__day:active:not(:disabled) { background: var(--accent-wash); }
+.calendar-picker__today { display: flex; justify-content: flex-start; margin-top: 14px; }
+@media (hover: hover) { .calendar-picker__day:hover:not(:disabled) { background: var(--accent-wash); } }

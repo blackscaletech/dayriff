@@ -1,0 +1,31 @@
+.app-shell { display: flex; flex-direction: column; position: relative; isolation: isolate; width: min(100%, 636px); margin: 0 auto; padding: 0 24px 48px; min-height: 100dvh; }
+.site-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 83px; }
+.app-shell--home { width: min(100%, 700px); padding-top: 24px; }
+.app-shell--onboarding { width: min(100%, 900px); }
+.main-content { min-width: 0; }
+.planning-screen { padding-top: 20px; animation: surface-enter 360ms ease both; }
+.planning-screen--home { --glass-card: var(--glass-planning-field); --glass-control: var(--glass-planning-control); --glass-line: var(--glass-planning-line); --ink-placeholder: var(--planning-placeholder); margin-top: 0; padding: 26px; border: 1px solid var(--glass-planning-line); border-radius: 30px; background: var(--glass-planning); box-shadow: var(--glass-planning-shadow); backdrop-filter: blur(var(--planning-backdrop-blur, 24px)) saturate(1.08); -webkit-backdrop-filter: blur(var(--planning-backdrop-blur, 24px)) saturate(1.08); }
+.app-shell--onboarding .planning-screen--home { --planning-backdrop-blur: 18px; padding: 32px; }
+.planning-brand-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.planning-brand { display: block; }
+.screen-heading { margin-bottom: var(--planning-heading-gap, 27px); }
+.screen-heading h1 { font-size: 28px; font-weight: var(--weight-title); line-height: 1.2; letter-spacing: -.85px; margin: 0 0 11px; }
+.screen-heading p { max-width: 450px; font-size: var(--text-body); line-height: var(--leading-body); color: var(--ink-secondary); margin: 0; }
+.planning-screen--home .screen-heading p { max-width: 480px; font-size: 17px; font-weight: var(--weight-label); line-height: 1.45; color: var(--ink); letter-spacing: -.15px; }
+.screen-heading--editing { margin-top: -14px; }
+.planning-back { margin: 0 0 16px; gap: 5px; }
+.planning-back > svg { transform: rotate(90deg); flex-shrink: 0; }
+.preview-note { padding: 0 9px; color: var(--ink-muted); font-size: 11px; line-height: 1.6; text-align: center; margin: 15px 0 0; }
+.connection-state { min-height: 65vh; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; }
+.connection-state > .spinner { color: var(--accent); }
+.connection-state > p { font-size: var(--text-secondary); font-weight: var(--weight-label); color: var(--ink-muted); }
+.connection-state h1 { font-size: 25px; font-weight: var(--weight-heading); letter-spacing: -.6px; margin: 0; }
+.connection-state > .failure-notice { width: min(100%, 430px); }
+@media (min-width: 960px) {
+  .app-shell--onboarding { --planning-heading-gap: clamp(36px, 4.8dvh, 56px); --search-options-height: min(310px, 30dvh); padding-block: 40px 64px; }
+  .app-shell--onboarding .main-content { margin-block: auto; }
+}
+@media (max-width: 480px) { .app-shell { padding: 0 20px 36px; } .app-shell--home { padding-top: 12px; } .site-header { min-height: 74px; } .planning-screen { padding-top: 15px; } .planning-screen--home { margin-top: 0; padding: 20px 15px; border-radius: var(--radius-lg); } .planning-brand-row { margin-bottom: 20px; } .screen-heading { margin-bottom: 22px; } .screen-heading h1 { font-size: 27px; }  .app-shell--onboarding { padding-inline: 12px; } .app-shell--onboarding .planning-screen--home { padding: 24px 20px; } }
+@media (max-width: 350px) { .app-shell { padding-inline: 15px; } .screen-heading h1 { font-size: 25px; } .screen-heading p { font-size: var(--text-secondary); } }
+
+@media (prefers-reduced-transparency: reduce) { .planning-screen--home { backdrop-filter: none; -webkit-backdrop-filter: none; } }

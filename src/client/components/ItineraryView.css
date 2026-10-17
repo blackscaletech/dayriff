@@ -1,0 +1,38 @@
+.itinerary { padding: 16px 0 var(--journey-dock-clearance); animation: journey-enter 320ms ease both; }
+.itinerary__heading h1 { font-size: 29px; font-weight: var(--weight-title); letter-spacing: -.85px; line-height: 1.15; margin: 10px 0 10px; }
+.itinerary__heading h1:focus { outline: none; }
+.itinerary__date { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--leading-caption); margin: 0; font-weight: var(--weight-label); font-variant-numeric: tabular-nums; }
+.itinerary__date > span { color: var(--ink-placeholder); }
+.itinerary__inspiration { display: flex; align-items: center; gap: 7px; color: var(--ink-secondary); font-size: var(--text-secondary); line-height: var(--leading-caption); margin: 0; font-weight: var(--weight-body); }
+.itinerary__inspiration > svg { flex-shrink: 0; color: var(--ink-muted); }
+.itinerary__inspiration strong { font-weight: var(--weight-label); color: var(--ink); }
+.itinerary__summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: var(--text-caption); line-height: var(--leading-caption); color: var(--ink-secondary); margin: 20px 0 0; font-weight: var(--weight-label); }
+.itinerary__summary > span { display: inline-flex; align-items: center; gap: 5px; min-height: 30px; padding: 6px 10px; border-radius: var(--radius-pill); background: var(--glass-surface); }
+.itinerary__summary > span:first-child { color: var(--ink); }
+.itinerary__footnote { color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--leading-caption); margin: 25px 0 0 39px; font-weight: var(--weight-body); }
+.journey-feedback { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 7px 7px 7px 12px; margin-top: 17px; border-radius: var(--radius-md); background: var(--glass-surface); border: 1px solid var(--glass-line); color: var(--ink-secondary); font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-caption); }
+.journey-feedback > span { display: inline-flex; align-items: center; gap: 8px; }
+.journey-feedback__check { color: var(--green); }
+.journey-feedback > .button { flex: 0 0 auto; font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-label); }
+@media (max-width: 480px) { .itinerary { padding-top: 10px; } .itinerary__heading h1 { font-size: 27px; } }
+@keyframes journey-enter { from { opacity: 0; } to { opacity: 1; } }
+.adjust-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.adjust-panel[hidden] { display: none; }
+.adjust-panel__conversation { flex: 1; min-height: 0; padding: 8px 16px max(16px, env(safe-area-inset-bottom)); }
+.chat-plan-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); flex: 0 0 auto; margin: 12px 16px 0; border: 1px solid var(--control-line); border-radius: 14px; background: var(--glass-control); overflow: hidden; }
+.chat-plan-actions__button { display: inline-flex; align-items: center; justify-content: center; min-width: 0; min-height: 42px; gap: 7px; padding: 10px; border: 0; background: transparent; color: var(--ink); font-size: var(--text-secondary); white-space: nowrap; font-weight: var(--weight-label); line-height: var(--leading-label); cursor: pointer; }
+.chat-plan-actions__button + .chat-plan-actions__button { border-left: 1px solid var(--glass-divider); }
+.chat-plan-actions__button:hover:not(:disabled) { background: var(--glass-control-hover); }
+.chat-plan-actions__button > svg { color: var(--ink-secondary); flex-shrink: 0; }
+.chat-plan-actions__count { display: grid; place-items: center; flex-shrink: 0; min-width: 16px; height: 16px; padding-inline: 3px; border-radius: var(--radius-pill); background: var(--accent-wash); color: var(--accent); font-size: var(--text-micro); font-variant-numeric: tabular-nums; font-weight: var(--weight-label); line-height: 1; }
+.chat-plan-context { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; margin: 4px 16px 0; padding: 9px 4px; border: 0; background: transparent; color: var(--ink-secondary); font-size: var(--text-caption); font-weight: var(--weight-label); line-height: var(--leading-caption); cursor: pointer; }
+.chat-plan-context > span { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.chat-plan-context > span:last-child { flex-shrink: 0; color: var(--accent); }
+.chat-plan-context strong { color: var(--ink); font-weight: var(--weight-label); }
+.chat-plan-context .spinner { width: 12px; height: 12px; }
+.itinerary__failure { margin-top: 17px; }
+.itinerary__panel-failure { margin-bottom: 14px; }
+.itinerary__panel-failure--place { padding: 16px; margin-bottom: 0; }
+.itinerary__heading { position: relative; }
+.itinerary__heading--actions { padding-inline-end: 56px; }
+.itinerary__share { position: absolute; inset: 0 0 auto auto; }

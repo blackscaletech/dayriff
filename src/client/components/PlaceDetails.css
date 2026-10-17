@@ -1,0 +1,47 @@
+.place-details { min-width: 0; }
+.place-details__visual .place-media, .place-details__visual .place-gallery__placeholder { aspect-ratio: 1.65 / 1; max-height: 300px; }
+.place-details__content { position: relative; margin-top: -18px; padding: 25px 24px max(28px, env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; border-top: 1px solid var(--glass-line); background: var(--surface); }
+.place-details__eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; color: var(--accent); font-size: var(--text-caption); font-weight: var(--weight-label); line-height: var(--leading-caption); margin: 0 0 8px; font-variant-numeric: tabular-nums; }
+.place-details__eyebrow > span { color: var(--ink-placeholder); }
+.place-details h2 { color: var(--ink); font-size: 26px; font-weight: var(--weight-title); letter-spacing: -.65px; line-height: 1.15; margin: 0; overflow-wrap: anywhere; }
+.place-details__meta { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 14px; color: var(--ink-secondary); font-size: var(--text-secondary); line-height: var(--leading-caption); margin: 11px 0 0; font-weight: var(--weight-label); }
+.place-details__meta > span + span { position: relative; }
+.place-details__meta > span + span::before { content: ''; position: absolute; width: 3px; height: 3px; left: -8px; top: calc(50% - 1.5px); border-radius: 50%; background: var(--ink-placeholder); }
+.place-details__change { display: flex; align-items: center; gap: 7px; color: var(--accent); font-size: var(--text-caption); line-height: var(--leading-caption); margin: 11px 0 0; font-weight: var(--weight-label); }
+.place-details__change > svg { flex-shrink: 0; }
+.place-details__change > span { overflow-wrap: anywhere; }
+.place-details__actions, .place-details__links { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+.place-details__actions { margin-top: 22px; }
+.place-details__actions > .button { flex: 1 1 auto; gap: 7px; font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.place-details__actions > button { color: var(--accent); }
+.place-details__feedback { color: var(--ink-secondary); background: var(--accent-wash); border-radius: var(--radius-sm); padding: 12px 14px; margin: 15px 0 0; font-size: var(--text-secondary); line-height: var(--leading-caption); font-weight: var(--weight-label); }
+.place-details__description { color: var(--ink-secondary); font-size: var(--text-callout); line-height: var(--leading-body); margin: 25px 0 0; overflow-wrap: anywhere; font-weight: var(--weight-body); letter-spacing: -.15px; }
+.place-details__perspective { padding: 20px 0 0; }
+.place-details__perspective h3 { font-size: var(--text-secondary); font-weight: var(--weight-heading); letter-spacing: -.1px; line-height: var(--leading-label); margin: 0 0 7px; }
+.place-details__perspective p { color: var(--ink-secondary); font-size: var(--text-body); line-height: var(--leading-body); margin: 0; overflow-wrap: anywhere; }
+.place-details__disclosures { margin-top: 24px; padding-inline: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-soft); }
+.place-details__disclosure + .place-details__disclosure { border-top: 1px solid var(--glass-divider); }
+.place-details__disclosure summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding-block: 13px; color: var(--ink); font-size: var(--text-secondary); list-style: none; cursor: pointer; font-weight: var(--weight-label); line-height: var(--leading-label); }
+.place-details__disclosure summary::-webkit-details-marker { display: none; }
+.place-details__disclosure summary > span { display: inline-flex; align-items: center; gap: 10px; }
+.place-details__disclosure summary > span > svg { color: var(--ink-muted); }
+.place-details__disclosure summary > svg { flex-shrink: 0; color: var(--ink-muted); transition: transform 160ms; }
+.place-details__disclosure[open] summary > svg { transform: rotate(180deg); }
+.place-details__disclosure > div { padding-bottom: 16px; }
+.place-details__disclosure p { color: var(--ink-secondary); font-size: var(--text-secondary); line-height: var(--leading-body); margin: 0; overflow-wrap: anywhere; }
+.place-details__disclosure p + p { margin-top: 10px; }
+.place-details__disclosure dl { display: grid; gap: 7px; margin: 10px 0 0; color: var(--ink-secondary); font-size: var(--text-secondary); line-height: var(--leading-caption); font-weight: var(--weight-body); }
+.place-details__disclosure dl:empty { display: none; }
+.place-details__disclosure dl > div { display: grid; grid-template-columns: minmax(80px, 1fr) auto; gap: 12px; }
+.place-details__disclosure dt { min-width: 0; }
+.place-details__disclosure dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.place-details__disclosure dd > span { display: block; }
+.place-details__info { margin-top: 24px; padding-top: 21px; border-top: 1px solid var(--glass-divider); }
+.place-details__address { display: flex; align-items: flex-start; gap: 10px; }
+.place-details__address > svg { flex-shrink: 0; color: var(--ink-muted); margin-top: 2px; }
+.place-details__address > p { min-width: 0; color: var(--ink-secondary); font-size: var(--text-secondary); line-height: var(--leading-caption); margin: 0; overflow-wrap: anywhere; font-weight: var(--weight-label); }
+.place-details__links { margin-top: 16px; }
+.place-details__links > .button { gap: 7px; font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.place-details__source { color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--leading-caption); margin: 12px 0 0; overflow-wrap: anywhere; font-weight: var(--weight-body); }
+@media (min-width: 600px) { .place-details__visual .place-media, .place-details__visual .place-gallery__placeholder { aspect-ratio: 2.1 / 1; } .place-details__content { padding: 30px 36px 36px; } .place-details h2 { font-size: 29px; } }
+@media (max-width: 350px) { .place-details__content { padding-inline: 20px; } .place-details h2 { font-size: 24px; } .place-details__actions > .button { padding-inline: 11px; } }

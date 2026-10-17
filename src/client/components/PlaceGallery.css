@@ -1,0 +1,20 @@
+.place-gallery { position: relative; min-width: 0; isolation: isolate; background: var(--media-base); }
+.place-gallery__track { position: relative; z-index: 1; display: flex; width: 100%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.place-gallery__track::-webkit-scrollbar { display: none; }
+.place-gallery__track:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+.place-gallery__slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+.place-gallery__placeholder, .place-gallery__slide > .place-media { background: transparent; }
+.place-gallery__slide:not(.place-gallery__slide--loaded) .place-media figcaption { visibility: hidden; }
+.place-gallery__retained { position: absolute; inset: 0; pointer-events: none; }
+.place-gallery__retained .place-media > img { opacity: 1; transform: none; transition: none; }
+.place-gallery__retained .place-media figcaption { visibility: hidden; }
+.place-gallery--loading .place-gallery__retained .place-media figcaption { visibility: visible; }
+.place-gallery__count { position: absolute; z-index: 2; top: 18px; left: 18px; display: inline-flex; align-items: center; justify-content: center; min-height: 32px; padding: 6px 11px; border: 1px solid var(--glass-line); border-radius: var(--radius-pill); background: var(--glass-control); color: var(--ink); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); font-size: var(--text-caption); font-weight: var(--weight-label); font-variant-numeric: tabular-nums; pointer-events: none; }
+.place-gallery__controls { position: absolute; z-index: 2; left: 12px; right: 12px; top: 50%; display: flex; justify-content: space-between; pointer-events: none; transform: translateY(-50%); }
+.place-gallery__controls > .icon-control { pointer-events: auto; background: var(--glass-control); border-color: var(--glass-line); color: var(--ink); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.place-gallery__controls > .icon-control:hover:not(:disabled) { background: var(--glass-control-hover); }
+.place-gallery__controls > .icon-control:disabled { opacity: 0; pointer-events: none; }
+.place-gallery__count > .spinner { width: 12px; height: 12px; margin-left: 7px; border-width: 1.5px; }
+.place-gallery__previous > svg { transform: rotate(90deg); }
+.place-gallery__next > svg { transform: rotate(-90deg); }
+@media (prefers-reduced-transparency: reduce) { .place-gallery__count, .place-gallery__controls > .icon-control { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; } }

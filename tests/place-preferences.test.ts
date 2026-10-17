@@ -1,0 +1,60 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {explicitlyRequired, isRequiredPreference, mayDropPreference, mergePlacePreference, resolvePlacePreferences, retainRequestedPreferences, type ActivePlacePreference} from '../src/server/services/place-preferences.js';
+
+const culture: ActivePlacePreference = {query: 'culture', category: 'culture', ids: ['museum', 'landmark'], minimum: 2, strength: 'preference'};
+const dining: ActivePlacePreference = {query: 'restaurant', ids: ['bistro'], minimum: 1, strength: 'preference', turnSearch: true};
+test('explicit preservation binds the existing taste and leaves unrelated new tastes qualitative', () => {
+  const message = 'Keep both cultural stops and add a restaurant';
+  const groups = retainRequestedPreferences([culture], message, [{id: 'museum', name: 'Museum', category: 'culture'}, {id: 'landmark', name: 'Landmark', category: 'culture'}]);
+  assert.equal(groups[0]?.strength, 'required'); assert.equal(groups[0]?.minimum, 2);
+  assert.equal(explicitlyRequired(message, 'restaurant'), false);
+  assert.equal(explicitlyRequired('Keep my budget and add more restaurants', 'restaurant'), false);
+  assert.equal(explicitlyRequired('Only restaurants, please', 'restaurant'), true);
+  assert.equal(explicitlyRequired('Not only restaurants', 'restaurant'), false);
+  assert.equal(isRequiredPreference({...dining, diningStyle: 'fine_dining'}, 'I must have fine dining'), true);
+  assert.equal(isRequiredPreference({...dining, diningStyle: 'high_end'}, 'Only upscale places'), true);
+  assert.equal(isRequiredPreference({...dining, diningStyle: 'high_end'}, 'Keep my budget and add restaurants'), false);
+  assert.equal(culture.strength, 'preference', 'Resolving language must not mutate session memory');
+});
+test('older qualitative tastes can rebalance while explicit required groups stay enforced', () => {
+  const base = {excludeIds: ['rejected'], preferredWalkMinutes: 60};
+  const soft = resolvePlacePreferences([culture, dining], base, () => false);
+  assert.deepEqual(soft.requiredPlaceGroups, [{ids: ['bistro'], minimum: 1}]);
+  assert.deepEqual(soft.preferredPlaceGroups, [{ids: ['museum', 'landmark'], minimum: 2}]);
+  const hard = resolvePlacePreferences([{...culture, strength: 'required'}, dining], base, () => false);
+  assert.equal(hard.requiredPlaceGroups?.length, 2); assert.deepEqual(hard.excludeIds, ['rejected']); assert.equal(hard.preferredWalkMinutes, 60);
+  const restore = {ids: ['earlier'], minimum: 1};
+  const withRestore = resolvePlacePreferences([culture, dining], {...base, requiredPlaceGroups: [restore]}, candidate => {assert.deepEqual(candidate.requiredPlaceGroups?.[0], restore); return false;});
+  assert.deepEqual(withRestore.requiredPlaceGroups, [restore, {ids: ['bistro'], minimum: 1}]);
+});
+test('required preferences can be withdrawn only in a relevant affirmative withdrawal clause', () => {
+  const hard = {...culture, strength: 'required' as const};
+  assert.equal(mayDropPreference(hard, 'More restaurants'), false);
+  assert.equal(mayDropPreference(hard, 'Drop the budget and add restaurants'), false);
+  assert.equal(mayDropPreference(hard, 'Remove the budget for culture'), false);
+  assert.equal(mayDropPreference(hard, 'Replace restaurants with culture'), false);
+  assert.equal(mayDropPreference(hard, 'Restaurants instead of culture'), true);
+  assert.equal(mayDropPreference(hard, 'Culture instead of restaurants'), false);
+  assert.equal(mayDropPreference(hard, 'Do not remove culture'), false);
+  assert.equal(mayDropPreference(hard, 'Culture is not optional'), false);
+  assert.equal(mayDropPreference(hard, "I don't require culture anymore"), true);
+  assert.equal(mayDropPreference(hard, 'Make culture optional'), true);
+  assert.equal(mayDropPreference(hard, 'Culture is not required'), true);
+  assert.equal(explicitlyRequired("I don't require restaurants", 'restaurant'), false);
+});
+test('refreshing a shared query cannot downgrade mandatory dining evidence or minimum counts', () => {
+  const hard: ActivePlacePreference = {...dining, minimum: 2, strength: 'required', diningStyle: 'fine_dining'};
+  const refreshed = mergePlacePreference(hard, {...dining, ids: ['ordinary']}, 'More restaurants');
+  assert.equal(refreshed.strength, 'required'); assert.equal(refreshed.minimum, 2); assert.equal(refreshed.diningStyle, 'fine_dining');
+  assert.deepEqual(refreshed.ids, ['bistro'], 'Unqualified evidence cannot enter the required fine-dining group');
+  const premium = mergePlacePreference(hard, {...dining, ids: ['premium'], diningStyle: 'high_end'}, 'More high-end restaurants');
+  assert.equal(premium.diningStyle, 'high_end'); assert.deepEqual(premium.ids, ['premium']);
+  const preserved = mergePlacePreference(premium, {...dining, ids: ['fine'], diningStyle: 'fine_dining'}, 'More restaurants');
+  assert.equal(preserved.diningStyle, 'high_end'); assert.deepEqual(preserved.ids, ['premium']);
+  assert.equal(mayDropPreference(premium, 'Make luxury optional'), true);
+  const exclusive = mergePlacePreference({...hard, exclusive: true}, {...dining, exclusive: false}, 'More restaurants');
+  assert.equal(exclusive.exclusive, true, 'A refreshed query cannot relax a required all-stop restriction');
+  const relaxed = mergePlacePreference(hard, {...dining, ids: ['ordinary']}, 'I do not require fine dining anymore; more restaurants');
+  assert.equal(relaxed.strength, 'preference'); assert.equal(relaxed.diningStyle, undefined); assert.deepEqual(relaxed.ids, ['ordinary']);
+});

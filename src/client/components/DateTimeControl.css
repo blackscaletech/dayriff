@@ -1,0 +1,13 @@
+.date-time-control { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; min-width: 0; max-width: 65%; }
+.date-time-control__trigger { min-width: 0; white-space: nowrap; }
+.date-time-control__trigger > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.date-time-control__trigger > svg { flex-shrink: 0; color: var(--ink-muted); }
+.date-time-control__trigger[aria-invalid="true"] { color: var(--error); border-color: var(--error-line); }
+.date-time-control__trigger--empty { color: var(--ink-secondary); font-weight: var(--weight-body); }
+.date-time-control__clear { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink-muted); cursor: pointer; }
+.date-time-control__clear:active { color: var(--accent); background: var(--accent-wash); }
+.date-time-picker { padding: 18px 20px max(22px, env(safe-area-inset-bottom)); }
+.date-time-picker__validation { color: var(--error); font-size: var(--text-secondary); line-height: var(--leading-caption); margin: 12px 0 0; font-weight: var(--weight-body); }
+.date-time-picker__confirmation { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--glass-divider); }
+.date-time-picker__confirmation > .button { min-width: 116px; }
+@media (max-width: 350px) { .date-time-control__trigger { gap: 7px; padding-inline: 9px; } }

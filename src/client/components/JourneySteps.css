@@ -1,0 +1,9 @@
+.journey-steps { max-width: 440px; margin-bottom: 24px; }
+.journey-steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0; margin: 0; list-style: none; }
+.journey-steps li { min-width: 0; }
+.journey-step { width: 100%; min-height: 44px; gap: 8px; padding: 8px 12px; border-color: var(--control-line); color: var(--ink-secondary); }
+.journey-step[aria-current='step'] { border-color: var(--accent-line); background: var(--accent-wash); color: var(--accent); }
+.journey-step__mark { display: grid; place-items: center; flex: 0 0 auto; }
+.journey-step__label { font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-label); }
+@media (max-width: 700px) { .journey-steps { margin-bottom: 24px; } .journey-steps ol { gap: 7px; } .journey-step { padding: 9px 8px; gap: 7px; } .journey-step__mark svg { width: 16px; height: 16px; } }
+@media (max-width: 350px) { .journey-step { gap: 5px; padding-inline: 5px; } }

@@ -1,0 +1,15 @@
+Dayriff original source and original brand artwork are provided under the MIT
+license in LICENSE. Third-party packages retain their own license notices.
+
+Qloo and OpenAI are third-party services used by this application. Their names
+identify those integrations and do not imply endorsement or a prize award.
+Qloo API credentials, response caches, private trip data and validation payloads
+are excluded from the public repository and build uploads.
+
+Remote place/artist photography and provider-supplied facts are not relicensed
+under Dayriff's MIT license. They remain subject to their respective owners'
+and providers' terms. Retain displayed attribution and verify permission for any
+third-party media included in a public demo or submission. The homepage
+screenshot used for the social card includes third-party photography; its
+inclusion does not transfer or expand the rights to those photographs.
+Original Dayriff layout, wordmark and icons are covered by the MIT license.

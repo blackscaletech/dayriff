@@ -1,0 +1,10 @@
+.failure-notice { min-width: 0; padding: 15px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-soft); color: var(--ink); }
+.failure-notice__content { display: flex; align-items: flex-start; gap: 10px; }
+.failure-notice__content > div { flex: 1; min-width: 0; }
+.failure-notice__mark { display: grid; place-items: center; flex: 0 0 auto; width: 23px; height: 23px; margin-top: 1px; border-radius: 50%; background: var(--accent-wash); color: var(--accent); font-size: var(--text-secondary); font-weight: var(--weight-label); }
+.failure-notice h3 { margin: 0 0 5px; color: var(--ink); font-size: var(--text-label); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.failure-notice p { margin: 0; color: var(--ink-secondary); font-size: var(--text-secondary); line-height: var(--leading-caption); overflow-wrap: anywhere; font-weight: var(--weight-body); }
+.failure-notice__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 12px; }
+.failure-notice__actions > .button { font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.failure-notice--inline { padding: 12px; background: var(--accent-wash); border-color: transparent; }
+.failure-notice--inline .failure-notice__mark { background: var(--glass-card); }

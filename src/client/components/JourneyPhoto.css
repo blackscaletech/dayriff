@@ -1,0 +1,5 @@
+.journey-photo { position: relative; display: block; overflow: hidden; isolation: isolate; background: var(--accent-wash); }
+.journey-photo > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.journey-photo__current { animation: journey-photo-reveal 320ms ease both; }
+@keyframes journey-photo-reveal { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .journey-photo__current { animation: none; } }

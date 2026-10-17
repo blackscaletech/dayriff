@@ -1,0 +1,48 @@
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; scrollbar-gutter: stable; }
+body { margin: 0; background: radial-gradient(ellipse 530px 390px at calc(50% - 230px) 0, var(--ambient-one), transparent), radial-gradient(ellipse 440px 420px at calc(50% + 270px) 180px, var(--ambient-two), transparent), var(--canvas); color: var(--ink); font-family: var(--font-body); font-optical-sizing: auto; -webkit-font-smoothing: antialiased; background-attachment: fixed; font-size: var(--text-body); font-weight: var(--weight-body); line-height: var(--leading-body); }
+button, input, select, textarea { font: inherit; color: inherit; }
+.button, .icon-control, .value-control { appearance: none; -webkit-appearance: none; }
+button, a, input, select, textarea, summary { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+button:disabled, fieldset:disabled { cursor: default; }
+button:disabled { opacity: .5; }
+input, select, textarea { width: 100%; min-width: 0; min-height: 44px; background: transparent; border: 0; border-radius: var(--radius-sm); padding: 9px 0; font-size: var(--text-input); font-weight: var(--weight-body); line-height: var(--leading-label); transition: box-shadow 150ms; }
+input::placeholder, textarea::placeholder { color: var(--ink-placeholder); opacity: 1; }
+input:focus, select:focus, textarea:focus { outline: none; box-shadow: var(--focus-ring); }
+input:disabled, select:disabled { opacity: .65; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.field > label, .field-label { font-size: var(--text-label); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.field > small { font-size: var(--text-caption); color: var(--ink-muted); line-height: var(--leading-caption); font-weight: var(--weight-body); }
+.value-control { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-width: 0; min-height: 44px; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--glass-control); color: var(--ink); font-size: var(--text-callout); font-weight: var(--weight-label); line-height: var(--leading-label); letter-spacing: -.15px; cursor: pointer; transition: background 150ms, border-color 150ms; }
+.value-control > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.value-control > svg { flex-shrink: 0; color: var(--ink-muted); }
+.value-control:active { background: var(--accent-wash); }
+@media (hover: hover) { .value-control:hover { border-color: var(--line-strong); background: var(--glass-control-hover); } }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 13px 18px; min-height: 48px; border: 1px solid transparent; border-radius: var(--radius-pill); font-size: var(--text-control); font-weight: var(--weight-label); line-height: var(--leading-label); text-decoration: none; cursor: pointer; transition: background 150ms, border-color 150ms, transform 150ms; }
+.button:active:not(:disabled) { transform: scale(.985); }
+.button > svg { flex-shrink: 0; }
+.button--primary { background: var(--tint-control); color: var(--accent-ink); border-color: transparent; box-shadow: var(--control-shadow); }
+.button--primary:hover:not(:disabled) { background: var(--accent-hover); }
+.button--outline { border-color: var(--line-strong); background: var(--surface); }
+.button--outline:hover:not(:disabled) { border-color: var(--accent-line); }
+.button--glass, .icon-control { background: var(--glass-control); border-color: var(--control-line); box-shadow: var(--control-shadow); backdrop-filter: blur(18px) saturate(1.15); -webkit-backdrop-filter: blur(18px) saturate(1.15); }
+.button--glass { color: var(--ink); }
+.button--glass:hover:not(:disabled) { background: var(--glass-control-hover); }
+.button--small { min-height: 44px; padding: 10px 14px; font-size: var(--text-secondary); border-radius: var(--radius-pill); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.icon-control { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 44px; height: 44px; padding: 11px; color: var(--ink-secondary); border: 1px solid var(--control-line); border-radius: var(--radius-pill); text-decoration: none; cursor: pointer; transition: background 150ms, border-color 150ms, transform 150ms; }
+.icon-control:hover:not(:disabled) { background: var(--glass-control-hover); }
+.icon-control:active:not(:disabled) { transform: scale(.96); }
+.icon-control > svg { flex-shrink: 0; }
+.badge { display: inline-flex; padding: 5px 9px; background: var(--accent-wash); color: var(--accent); border-radius: 6px; font-size: var(--text-caption); line-height: var(--leading-caption); font-weight: var(--weight-label); }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 1.5px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 800ms linear infinite; flex-shrink: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.skip-link { position: fixed; top: 10px; left: 10px; z-index: 100; transform: translateY(-150%); background: var(--accent); color: var(--surface); padding: 12px 18px; border-radius: var(--radius-sm); font-size: var(--text-secondary); font-weight: var(--weight-label); line-height: var(--leading-label); }
+.skip-link:focus { transform: translateY(0); }
+::selection { background: var(--accent-wash); color: var(--accent); }
+@keyframes surface-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+@media (prefers-reduced-transparency: reduce) { .button--glass, .icon-control { backdrop-filter: none; -webkit-backdrop-filter: none; } }
