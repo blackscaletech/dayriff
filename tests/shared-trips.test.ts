@@ -1,3 +1,4 @@
+import {createTestDirectory} from './helpers/temp-directory.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomBytes} from 'node:crypto';
@@ -13,8 +14,7 @@ import {checkPlan} from '../src/server/services/planner.js';
 import type {Itinerary} from '../src/shared/types.js';
 import type {SessionState} from '../src/server/routes.js';
 import type {ServerConfig} from '../src/server/config.js';
-import {mkdtemp, rm} from 'node:fs/promises';
-import {resolve} from 'node:path';
+import {rm} from 'node:fs/promises';
 
 const config: ServerConfig = {mode: 'sample', port: 3000, host: '127.0.0.1', production: false,
   qlooApiUrl: 'https://hackathon.api.qloo.com', openaiModel: 'test', openaiReasoningEffort: 'medium',
@@ -134,7 +134,7 @@ test('a bounded set of active shares never evicts a promised seven-day link', as
 });
 
 test('public links survive app/store restarts while a cleared owner cannot be resurrected by an orphan pointer', async () => {
-  const directory = await mkdtemp(resolve('.private/shared-tests-'));
+  const directory = await createTestDirectory('shared-tests-');
   try {
     const store = await createFileStateStore(directory), sharing = createSharedTrips(store), ownerId = randomBytes(32).toString('base64url');
     const draft = state(await fixture()), link = await sharing.publish(draft, ownerId);

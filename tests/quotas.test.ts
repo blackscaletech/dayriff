@@ -1,7 +1,7 @@
+import {createTestDirectory} from './helpers/temp-directory.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {mkdtemp, rm} from 'node:fs/promises';
-import {resolve} from 'node:path';
+import {rm} from 'node:fs/promises';
 import {loadConfig} from '../src/server/config.js';
 import {createHttpServer} from '../src/server/app.js';
 import {registerSecurity} from '../src/server/security.js';
@@ -29,7 +29,7 @@ test('atomic shared quotas enforce browser, global, search and UTC day limits wi
 });
 
 test('quota reservations survive recreation and remain atomic between local server instances', async () => {
-  const directory = await mkdtemp(resolve('.private/quota-test-'));
+  const directory = await createTestDirectory('quota-test-');
   try {
     const first = createQuotas({...config, maxSessionDailyPlans: 10}, await createFileStateStore(directory));
     const second = createQuotas({...config, maxSessionDailyPlans: 10}, await createFileStateStore(directory));

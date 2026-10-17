@@ -1,5 +1,6 @@
+import {createTestDirectory} from './helpers/temp-directory.js';
 import assert from 'node:assert/strict';
-import {mkdtemp, rm, readdir, readFile, writeFile} from 'node:fs/promises';
+import {rm, readdir, readFile, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import test from 'node:test';
 import Fastify, {type FastifyInstance} from 'fastify';
@@ -34,7 +35,7 @@ async function create(app: FastifyInstance, message = 'Saved private trip') {
 }
 
 test('local trips survive store/server recreation and records never contain the raw session cookie', async () => {
-  const directory = await mkdtemp(resolve('.private/storage-test-')); let app: FastifyInstance | undefined;
+  const directory = await createTestDirectory('storage-test-'); let app: FastifyInstance | undefined;
   try {
     app = await server(await createFileStateStore(directory)); const cookie = await create(app); await app.close();
     app = await server(await createFileStateStore(directory)); const restored = await app.inject({url: '/trip', headers: {cookie}});
@@ -45,7 +46,7 @@ test('local trips survive store/server recreation and records never contain the 
 });
 
 test('independent local stores atomically share quota counters without lost updates', async () => {
-  const directory = await mkdtemp(resolve('.private/storage-test-'));
+  const directory = await createTestDirectory('storage-test-');
   try {
     const first = await createFileStateStore(directory), second = await createFileStateStore(directory);
     await Promise.all(Array.from({length: 30}, (_, i) => (i % 2 ? first : second).transact<number, void>('quota', current => ({record: {value: (current ?? 0) + 1, expiresAt: Date.now() + 60000}, result: undefined}))));
@@ -54,7 +55,7 @@ test('independent local stores atomically share quota counters without lost upda
 });
 
 test('a shared session lease prevents duplicate revisions and clear invalidates an in-flight commit', async () => {
-  const directory = await mkdtemp(resolve('.private/storage-test-'));
+  const directory = await createTestDirectory('storage-test-');
   const store = await createFileStateStore(directory), otherStore = await createFileStateStore(directory); let entered!: () => void, release!: () => void;
   const started = new Promise<void>(resolve => {entered = resolve;}), gate = new Promise<void>(resolve => {release = resolve;});
   const first = await server(store, async message => {if (message === 'Delayed update') {entered(); await gate;}}), second = await server(otherStore);
@@ -109,7 +110,7 @@ test('an expired mutation lease can recover after a process dies, and its stale 
 });
 
 test('real trip routes durably retain revisions, undo history and conversation, then clear all private data', async () => {
-  const directory = await mkdtemp(resolve('.private/storage-test-')); let app: FastifyInstance | undefined, store: StateStore | undefined;
+  const directory = await createTestDirectory('storage-test-'); let app: FastifyInstance | undefined, store: StateStore | undefined;
   async function start() {
     const next = Fastify(); registerErrorHandler(next); await next.register(cookie, {secret: config.cookieSecret});
     store = await createFileStateStore(directory); const sessions = createSessions(config, store);
@@ -134,7 +135,7 @@ test('real trip routes durably retain revisions, undo history and conversation, 
 
 
 test('malformed local envelopes fail closed without resetting or deleting the existing record', async () => {
-  const directory = await mkdtemp(resolve('.private/storage-test-')); const store = await createFileStateStore(directory);
+  const directory = await createTestDirectory('storage-test-'); const store = await createFileStateStore(directory);
   try {
     await store.transact('session', () => ({record: {value: {private: 'saved'}, expiresAt: Date.now() + 60000}, result: undefined}));
     const path = resolve(directory, (await readdir(directory)).find(name => name.endsWith('.json'))!);

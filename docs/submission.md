@@ -8,7 +8,7 @@ Eligibility depends on age of majority, location and conflicts/affiliations. Exc
 
 ## Publication checks
 
-1. Verify the hosted live app before publishing the `v0.1.0` source release. The demo is `https://dayriff.com`; the release repository is `https://github.com/blackscaletech/dayriff`. Record the confirmed demo URL, public repository URL and exact tag/commit in the final submission. Confirm GitHub detects the root MIT license and that a fresh install follows the README.
+1. Verify the hosted live app before publishing a versioned source release. The demo is `https://dayriff.com`; the release repository is `https://github.com/blackscaletech/dayriff`. Record the confirmed demo URL, public repository URL and exact tag/commit in the final submission. Confirm GitHub detects the root MIT license and that a fresh install follows the README.
 2. Keep keys, provider caches, trip records and private reports out of both Git and build uploads. The repository attribution is `blackscaletech`; do not add automated assistants as human team members or Git contributors.
 3. Describe Qloo’s actual role: artist-to-place taste affinity, geographic entity resolution and grounded follow-up discovery. Avoid claims of artist visits, endorsements, guaranteed coverage, verified live hours, reservations or current Michelin stars without evidence.
 4. Verify media rights for the app and submission assets, including photographs embedded in the homepage screenshot/social image. The MIT source license does not relicense those photographs. The public [Qloo terms](https://www.qloo.com/legal/terms) refer to additional API terms; check the event-issued agreement for permitted use and redistribution. Attribution alone is not a license.
